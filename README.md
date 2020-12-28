@@ -25,6 +25,5 @@
 - Todo
 ## context
 - title
-- detail
 - date
 - status
