@@ -61,7 +61,14 @@ const FormDialog = () => {
             const newSelectedTodo = {...selectedTodo}
             newSelectedTodo.status = status
             newSelectedTodo.updatedAt = getDate()
-            setRows([...newRows, newSelectedTodo])
+            setRows(
+                [...newRows, newSelectedTodo]
+                    .sort((a,b) => {
+                        if(a.id > b.id) return -1;
+                        if(a.id < b.id) return 1;
+                        return 0;
+                    })
+            )
         } else {
             setRows([...rows, { 
                 title: selectedTodo.title, 
