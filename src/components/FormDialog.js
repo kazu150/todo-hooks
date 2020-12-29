@@ -30,8 +30,6 @@ const FormDialog = () => {
             return;
         };
 
-        
-
         if(selectedTodo.id){
             const newRows = rows;
             newRows[selectedTodo.id-1] = selectedTodo;
@@ -39,7 +37,6 @@ const FormDialog = () => {
 
         } else {
             setRows([...rows, { 
-                id: rows.length + 1, 
                 title: selectedTodo.title, 
                 limit: formattedDate, 
                 status: '未着手'
@@ -51,7 +48,9 @@ const FormDialog = () => {
     }
 
     const onTodoDelete = () => {
-        setRows(rows.filter(row => row.id !== selectedTodo.id))
+        setRows(
+            rows.filter(row => row !== selectedTodo)
+        )
         handleClose()
     }
 
@@ -107,15 +106,12 @@ const FormDialog = () => {
                     />
                 </DialogContent>
                 <DialogActions>
+                    <Button onClick={onTodoDelete} color="secondary">
+                        削除
+                    </Button>
                     <Button onClick={handleClose} color="primary">
                         キャンセル
                     </Button>
-                    {
-                        selectedTodo.id ?
-                        <Button onClick={onTodoDelete} color="secondary">
-                            削除
-                        </Button> : ''
-                    }
                     <Button onClick={onTodoSubmit} color="primary">
                         追加
                     </Button>

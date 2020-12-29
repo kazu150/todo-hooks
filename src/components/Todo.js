@@ -9,14 +9,14 @@ const Todo = () => {
 
     const onItemClicked = (id) => {
         setOpen(true)
-        setSelectedTodo(rows[id - 1])
+        setSelectedTodo( ...rows.filter(row => row.id === id) )
     }
 
     return (
         <TableBody>
-            {rows.map((row) => (
+            {rows.map((row, index) => (
                 <TableRow key={row.id} onClick={() => onItemClicked(row.id)}>
-                    <TableCell align="left">{row.id}</TableCell>
+                    <TableCell align="left">{index + 1}</TableCell>
                     <TableCell component="th" scope="row">
                         {row.title}
                     </TableCell>
