@@ -6,7 +6,12 @@ import TableRow from '@material-ui/core/TableRow';
 import TableBody from '@material-ui/core/TableBody';
 
 const Todo = () => {
-    const {rows, setRows, open, setOpen, selectedTodo, setSelectedTodo, status, setStatus} = useContext(TodoContext)
+    const {
+        rows,
+        setOpen,
+        setSelectedTodo,
+        setStatus
+    } = useContext(TodoContext)
 
 
 
