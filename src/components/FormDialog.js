@@ -62,14 +62,14 @@ const FormDialog = () => {
             newSelectedTodo.status = status
             newSelectedTodo.updatedAt = getDate()
             setRows([...newRows, newSelectedTodo])
-
         } else {
             setRows([...rows, { 
                 title: selectedTodo.title, 
                 limit: selectedTodo.limit, 
                 createdAt: getDate(),
                 updatedAt: getDate(),
-                status: status
+                status: status,
+                id: rows.reduce((a,b) => a.id>b.id ? a : b).id + 1
             }]);
         }        
 
