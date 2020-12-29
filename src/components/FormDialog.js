@@ -36,7 +36,14 @@ const FormDialog = () => {
 
     const handleClose = () => {
         setOpen(false);
-        setSelectedTodo({})
+        setSelectedTodo({
+            title: '',
+            limit: '',
+            createdAt: '',
+            updatedAt: '',
+            status: '',
+            id: ''
+        });
         setStatus('未着手')
     };
 
@@ -80,7 +87,6 @@ const FormDialog = () => {
             }]);
         }        
 
-        setSelectedTodo({});
         handleClose();
     }
 

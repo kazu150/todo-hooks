@@ -5,7 +5,14 @@ import FormDialog from './FormDialog';
 export const TodoContext = React.createContext()
 
 const App = () => {
-  const [selectedTodo, setSelectedTodo] = useState({});
+  const [selectedTodo, setSelectedTodo] = useState({
+    title: '',
+    limit: '',
+    createdAt: '',
+    updatedAt: '',
+    status: '',
+    id: ''
+  });
   const [status, setStatus] = useState('未着手');
   
   function createData(id, title, limit, createdAt, updatedAt, description, status) {  

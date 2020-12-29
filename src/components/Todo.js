@@ -31,17 +31,6 @@ const Todo = () => {
 
     const classes = useStyles();
 
-    const changeColor = (status) => {
-        console.log(status)
-        if(status === "未着手"){
-            return classes.normal;
-        } else if(status === "途中"){
-            return classes.urgent;
-        } else if(status === "完了"){
-            return classes.finished;
-        }
-    }
-
     return (
         <TableBody>
             {rows.map((row, index) => (
