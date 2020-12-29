@@ -22,6 +22,8 @@ const Todo = () => {
                         {row.title}
                     </TableCell>
                     <TableCell align="right">{row.limit}</TableCell>
+                    <TableCell align="right">{row.createdAt}</TableCell>
+                    <TableCell align="right">{row.updatedAt}</TableCell>
                     <TableCell align="right">{row.status}</TableCell>
                 </TableRow>
             ))}

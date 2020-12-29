@@ -15,7 +15,16 @@ import Select from '@material-ui/core/Select';
 
 
 const FormDialog = () => {
-    const { rows, setRows, open, setOpen, selectedTodo, setSelectedTodo, status, setStatus } = useContext(TodoContext);
+    const { 
+        rows, 
+        setRows, 
+        open, 
+        setOpen, 
+        selectedTodo, 
+        setSelectedTodo, 
+        status, 
+        setStatus 
+    } = useContext(TodoContext);
 
     const handleChange = (event) => {
         setStatus(event.target.value);
@@ -29,6 +38,11 @@ const FormDialog = () => {
         setOpen(false);
         setSelectedTodo({})
     };
+
+    const getDate = () => {
+        let date = new Date();
+        return `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`
+    }
 
     const onTodoSubmit = (e) => {
         e.preventDefault();
@@ -45,12 +59,15 @@ const FormDialog = () => {
             const newRows = rows.filter(row => row.id !== selectedTodo.id)
             const newSelectedTodo = {...selectedTodo}
             newSelectedTodo.status = status
+            newSelectedTodo.updatedAt = getDate()
             setRows([...newRows, newSelectedTodo])
 
         } else {
             setRows([...rows, { 
                 title: selectedTodo.title, 
                 limit: selectedTodo.limit, 
+                createdAt: getDate(),
+                updatedAt: getDate(),
                 status: status
             }]);
         }        
@@ -75,7 +92,19 @@ const FormDialog = () => {
             marginLeft: theme.spacing(1),
             marginRight: theme.spacing(1),
             width: 200,
+            marginLeft: 0,
+            marginTop: '10px',
+            marginBottom: '10px',
+            display: 'block'
         },
+        formControl: {
+            display: 'block',
+            width: '100%',
+            marginBottom: '10px',
+        },
+        block: {
+            display: 'block',
+        }
     }));
 
     const classes = useStyles();
@@ -134,6 +163,10 @@ const FormDialog = () => {
                             <MenuItem value={"完了"}>完了</MenuItem>
                         </Select>
                     </FormControl>
+                    <DialogContentText className={classes.block}>
+                        作成日：{selectedTodo.createdAt}<br/>
+                        最終更新日：{selectedTodo.updatedAt}
+                    </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={onTodoDelete} color="secondary">

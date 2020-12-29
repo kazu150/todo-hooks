@@ -31,6 +31,8 @@ const TodoList = () => {
                             <TableCell>No.</TableCell>
                             <TableCell>タイトル</TableCell>
                             <TableCell align="right">期限</TableCell>
+                            <TableCell align="right">作成日</TableCell>
+                            <TableCell align="right">最終更新日</TableCell>
                             <TableCell align="right">状態</TableCell>
                         </TableRow>
                     </TableHead>
