@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import {TodoContext} from './App';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -37,6 +37,7 @@ const FormDialog = () => {
     const handleClose = () => {
         setOpen(false);
         setSelectedTodo({})
+        setStatus('未着手')
     };
 
     const getDate = () => {
@@ -104,6 +105,10 @@ const FormDialog = () => {
         },
         block: {
             display: 'block',
+        },
+        button: {
+            marginTop: '20px',
+            marginLeft: '20px'
         }
     }));
 
@@ -112,7 +117,7 @@ const FormDialog = () => {
 
     return (
         <div>
-            <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+            <Button className={classes.button} variant="outlined" color="primary" onClick={handleClickOpen}>
                 TODOを登録する
             </Button>
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
@@ -163,6 +168,21 @@ const FormDialog = () => {
                             <MenuItem value={"完了"}>完了</MenuItem>
                         </Select>
                     </FormControl>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="description"
+                        label="詳細"
+                        type="text"
+                        multiline
+                        rows={4}
+                        value={selectedTodo.description}
+                        onChange={e => setSelectedTodo({
+                            ...selectedTodo,
+                            description: e.target.value
+                        })}
+                        fullWidth
+                    />
                     <DialogContentText className={classes.block}>
                         作成日：{selectedTodo.createdAt}<br/>
                         最終更新日：{selectedTodo.updatedAt}
