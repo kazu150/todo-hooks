@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import {TodoContext} from './App';
+import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -7,9 +8,18 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+
 
 const FormDialog = () => {
-    const { rows, setRows, open, setOpen, selectedTodo, setSelectedTodo } = useContext(TodoContext);
+    const { rows, setRows, open, setOpen, selectedTodo, setSelectedTodo, status, setStatus } = useContext(TodoContext);
+
+    const handleChange = (event) => {
+        setStatus(event.target.value);
+    };
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -21,25 +31,27 @@ const FormDialog = () => {
     };
 
     const onTodoSubmit = (e) => {
-        const date = new Date()
-        const formattedDate = 
-        date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
         e.preventDefault();
-        if ( selectedTodo.title === '') {
-            alert ('タイトルを入力してください')
-            return;
-        };
+        if (!selectedTodo.title) {
+            alert('タイトルを入力してください')
+            return
+        }
+        if (!selectedTodo.limit) {
+            alert('期限を入力してください')
+            return
+        }
 
         if(selectedTodo.id){
-            const newRows = rows;
-            newRows[selectedTodo.id-1] = selectedTodo;
-            setRows(newRows)
+            const newRows = rows.filter(row => row.id !== selectedTodo.id)
+            const newSelectedTodo = {...selectedTodo}
+            newSelectedTodo.status = status
+            setRows([...newRows, newSelectedTodo])
 
         } else {
             setRows([...rows, { 
                 title: selectedTodo.title, 
-                limit: formattedDate, 
-                status: '未着手'
+                limit: selectedTodo.limit, 
+                status: status
             }]);
         }        
 
@@ -54,6 +66,21 @@ const FormDialog = () => {
         handleClose()
     }
 
+    const useStyles = makeStyles((theme) => ({
+        container: {
+            display: 'flex',
+            flexWrap: 'wrap',
+        },
+        textField: {
+            marginLeft: theme.spacing(1),
+            marginRight: theme.spacing(1),
+            width: 200,
+        },
+    }));
+
+    const classes = useStyles();
+
+
     return (
         <div>
             <Button variant="outlined" color="primary" onClick={handleClickOpen}>
@@ -61,7 +88,7 @@ const FormDialog = () => {
             </Button>
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">TODO</DialogTitle>
-                <DialogContent>
+                <DialogContent className={classes.container}>
                     <DialogContentText>
                         TODOを編集します
                     </DialogContentText>
@@ -79,31 +106,34 @@ const FormDialog = () => {
                         fullWidth
                     />
                     <TextField
-                        autoFocus
-                        margin="dense"
                         id="limit"
                         label="期限"
-                        type="text"
+                        type="date"
+                        fullWidth
                         value={selectedTodo.limit}
+                        className={classes.textField}
+                        InputLabelProps={{
+                        shrink: true,
+                        }}
                         onChange={e => setSelectedTodo({
                             ...selectedTodo,
                             limit: e.target.value
                         })}
-                        fullWidth
                     />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="status"
-                        label="状態"
-                        type="text"
-                        value={selectedTodo.status}
-                        onChange={e => setSelectedTodo({
-                            ...selectedTodo,
-                            status: e.target.value
-                        })}
-                        fullWidth
-                    />
+                    <FormControl className={classes.formControl}>
+                        <InputLabel id="demo-simple-select-label">状態</InputLabel>
+                        <Select
+                            fullWidth
+                            labelId="demo-simple-select-label"
+                            id="status"
+                            value={status}
+                            onChange={handleChange}
+                        >
+                            <MenuItem value={"未着手"}>未着手</MenuItem>
+                            <MenuItem value={"途中"}>途中</MenuItem>
+                            <MenuItem value={"完了"}>完了</MenuItem>
+                        </Select>
+                    </FormControl>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={onTodoDelete} color="secondary">

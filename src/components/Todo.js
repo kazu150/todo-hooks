@@ -5,11 +5,12 @@ import TableRow from '@material-ui/core/TableRow';
 import TableBody from '@material-ui/core/TableBody';
 
 const Todo = () => {
-    const {rows, setRows, open, setOpen, selectedTodo, setSelectedTodo} = useContext(TodoContext)
+    const {rows, setRows, open, setOpen, selectedTodo, setSelectedTodo, status, setStatus} = useContext(TodoContext)
 
     const onItemClicked = (id) => {
         setOpen(true)
         setSelectedTodo( ...rows.filter(row => row.id === id) )
+        setStatus(rows.filter(row => row.id === id)[0].status )
     }
 
     return (

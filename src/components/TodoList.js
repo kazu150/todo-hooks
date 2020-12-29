@@ -28,7 +28,7 @@ const TodoList = () => {
                 <Table className={classes.table} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell>ID</TableCell>
+                            <TableCell>No.</TableCell>
                             <TableCell>タイトル</TableCell>
                             <TableCell align="right">期限</TableCell>
                             <TableCell align="right">状態</TableCell>
