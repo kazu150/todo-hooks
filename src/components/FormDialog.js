@@ -16,14 +16,12 @@ import Select from '@material-ui/core/Select';
 
 const FormDialog = () => {
     const { 
-        rows, 
-        setRows, 
         open, 
         setOpen, 
-        selectedTodo, 
-        setSelectedTodo, 
         status, 
-        setStatus 
+        setStatus,
+        state,
+        dispatch
     } = useContext(TodoContext);
 
     const handleChange = (event) => {
@@ -36,14 +34,7 @@ const FormDialog = () => {
 
     const handleClose = () => {
         setOpen(false);
-        setSelectedTodo({
-            title: '',
-            limit: '',
-            createdAt: '',
-            updatedAt: '',
-            status: '',
-            id: ''
-        });
+        dispatch({ type: 'clear_selectedTodo' })
         setStatus('未着手')
     };
 
@@ -54,46 +45,51 @@ const FormDialog = () => {
 
     const onTodoSubmit = (e) => {
         e.preventDefault();
-        if (!selectedTodo.title) {
+        if (!state.selectedTodo.title) {
             alert('タイトルを入力してください')
             return
         }
-        if (!selectedTodo.limit) {
+        if (!state.selectedTodo.limit) {
             alert('期限を入力してください')
             return
         }
 
-        if(selectedTodo.id){
-            const newRows = rows.filter(row => row.id !== selectedTodo.id)
-            const newSelectedTodo = {...selectedTodo}
+        if(state.selectedTodo.id){
+            const newRows = state.rows.filter(row => row.id !== state.selectedTodo.id)
+            const newSelectedTodo = {...state.selectedTodo}
             newSelectedTodo.status = status
             newSelectedTodo.updatedAt = getDate()
-            setRows(
-                [...newRows, newSelectedTodo]
-                    .sort((a,b) => {
-                        if(a.id > b.id) return -1;
-                        if(a.id < b.id) return 1;
-                        return 0;
-                    })
-            )
+            dispatch({
+                type: 'update_row',
+                payload: [ ...newRows, newSelectedTodo ].sort((a,b) => {
+                    if(a.id > b.id) return -1;
+                    if(a.id < b.id) return 1;
+                    return 0;
+                })
+            })
         } else {
-            setRows([...rows, { 
-                title: selectedTodo.title, 
-                limit: selectedTodo.limit, 
-                createdAt: getDate(),
-                updatedAt: getDate(),
-                status: status,
-                id: rows.reduce((a,b) => a.id>b.id ? a : b).id + 1
-            }]);
+            dispatch({
+                type: 'create_row', 
+                payload: {
+                    title: state.selectedTodo.title, 
+                    limit: state.selectedTodo.limit, 
+                    createdAt: getDate(),
+                    updatedAt: getDate(),
+                    status: status,
+                    discription: state.selectedTodo.discription,
+                    id: state.rows.reduce((a,b) => a.id>b.id ? a : b).id + 1
+                }
+            })
         }        
 
         handleClose();
     }
 
     const onTodoDelete = () => {
-        setRows(
-            rows.filter(row => row !== selectedTodo)
-        )
+        dispatch({
+            type: 'delete_row',
+            payload: state.rows.filter(row => row !== state.selectedTodo)
+        })
         handleClose()
     }
 
@@ -145,10 +141,10 @@ const FormDialog = () => {
                         id="title"
                         label="タイトル"
                         type="text"
-                        value={selectedTodo.title}
-                        onChange={e => setSelectedTodo({
-                            ...selectedTodo,
-                            title: e.target.value
+                        value={state.selectedTodo.title}
+                        onChange={e => dispatch({
+                            type: 'update_selectedTodo',
+                            payload: { title: e.target.value }
                         })}
                         fullWidth
                     />
@@ -157,14 +153,14 @@ const FormDialog = () => {
                         label="期限"
                         type="date"
                         fullWidth
-                        value={selectedTodo.limit}
+                        value={state.selectedTodo.limit}
                         className={classes.textField}
                         InputLabelProps={{
                         shrink: true,
                         }}
-                        onChange={e => setSelectedTodo({
-                            ...selectedTodo,
-                            limit: e.target.value
+                        onChange={e => dispatch({
+                            type: 'update_selectedTodo',
+                            payload: { limit: e.target.value }
                         })}
                     />
                     <FormControl className={classes.formControl}>
@@ -189,16 +185,16 @@ const FormDialog = () => {
                         type="text"
                         multiline
                         rows={4}
-                        value={selectedTodo.description}
-                        onChange={e => setSelectedTodo({
-                            ...selectedTodo,
-                            description: e.target.value
+                        value={state.selectedTodo.description}
+                        onChange={e => dispatch({
+                            type: 'update_selectedTodo',
+                            payload: { discription: e.target.value }
                         })}
                         fullWidth
                     />
                     <DialogContentText className={classes.block}>
-                        作成日：{selectedTodo.createdAt}<br/>
-                        最終更新日：{selectedTodo.updatedAt}
+                        作成日：{state.selectedTodo.createdAt}<br/>
+                        最終更新日：{state.selectedTodo.updatedAt}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>

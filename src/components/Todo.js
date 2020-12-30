@@ -7,18 +7,21 @@ import TableBody from '@material-ui/core/TableBody';
 
 const Todo = () => {
     const {
-        rows,
         setOpen,
-        setSelectedTodo,
-        setStatus
+        setStatus,
+        state,
+        dispatch
     } = useContext(TodoContext)
 
 
 
     const onItemClicked = (id) => {
         setOpen(true)
-        setSelectedTodo( ...rows.filter(row => row.id === id) )
-        setStatus(rows.filter(row => row.id === id)[0].status )
+        dispatch({
+            type: 'set_selectedTodo',
+            payload: state.rows.filter(row => row.id === id)[0]
+        })
+        setStatus(state.rows.filter(row => row.id === id)[0].status )
     }
 
     const useStyles = makeStyles((theme) => ({
@@ -38,7 +41,7 @@ const Todo = () => {
 
     return (
         <TableBody>
-            {rows.map((row, index) => (
+            {state.rows.map((row, index) => (
                 <TableRow 
                     className={
                         (() => {
